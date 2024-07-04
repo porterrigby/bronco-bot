@@ -1,3 +1,4 @@
+import random
 import discord
 import os
 from dotenv import load_dotenv
@@ -22,8 +23,10 @@ class MyClient(discord.Client):
         print(f"{BOT_NAME} connected to {server_count} servers")
 
     async def on_message(self, message):
-        if message.content == "hello":
-            await message.channel.send("heyo")
+        if message.author.id == self.user.id:
+            return
+        if random.random() < 0.15:
+            await message.channel.send('"' + message.content + '"')
 
 
 intents = discord.Intents.default()
