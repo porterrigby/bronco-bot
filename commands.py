@@ -1,6 +1,5 @@
 import random
-import discord
-import os
+import transponder
 
 class Commands:
 
@@ -28,3 +27,7 @@ class Commands:
         await message.channel.send(random.randint(0, int(command[1])))
 
 
+    async def prompt(self):
+        await message.channel.send(
+            transponder.Transponder().prompt(message.content[1:].split(" "))
+        )

@@ -28,6 +28,8 @@ class MyClient(discord.Client):
                 await commands.coinflip()
             case "roll":
                 await commands.roll()
+            case "prompt":
+                await commands.prompt()
             case _:
                 await message.channel.send("You tried to issue me a command?!")
 
