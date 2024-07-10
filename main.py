@@ -9,29 +9,32 @@ load_dotenv()
 DISCORD_TOKEN = os.getenv("DISCORD_TOKEN")
 
 
+def check_command(message):
+    if message.content.startswith('>'):
+        return True
+    return False
+
+
 class MyClient(discord.Client):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.commands = None
 
     # Helper method to check if message is a command
-    def check_command(self, message):
-        if message.content.startswith('>'):
-            return True
-        return False
 
-    async def handle_command(self, message):
-        commands = Commands(msg=message)
+    async def handle_command(self, signal):
+        self.commands = Commands(signal=signal)
 
-        match commands.getCommand()[0]:
+        match self.commands.split_command[0]:
             case "coinflip":
-                await commands.coinflip()
+                await self.commands.coinflip()
             case "roll":
-                await commands.roll()
+                await self.commands.roll()
             case "prompt":
-                await commands.prompt()
+                await self.commands.prompt()
             case _:
-                await message.channel.send("You tried to issue me a command?!")
+                await signal.channel.send("You tried to issue me a command?!")
 
     # Executions on startup
     async def on_ready(self):
@@ -49,11 +52,8 @@ class MyClient(discord.Client):
         # Prevents BroncoBot from spontaneous response to self or on commands
         if message.author.id == self.user.id:
             return
-        elif self.check_command(message):  # If message is a command, handle it
+        elif check_command(message):  # If message is a command, handle it
             await self.handle_command(message)
-        elif random.random() < 1:  # probability that bot responds
-            await message.channel.send('"' + message.content + '"')
-
 
 intents = discord.Intents.default()
 intents.message_content = True

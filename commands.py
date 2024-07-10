@@ -1,33 +1,28 @@
 import random
-import transponder
+from transponder import Transponder
+
 
 class Commands:
 
-
-    def __init__(self, msg):
-        global command
-        global message
-
-        message = msg
-        command = message.content[1:].split(" ")
-
-        print(command)
-
-    def getCommand(self):
-        return command
+    def __init__(self, signal):
+        self.command = signal
+        self.split_command = self.command.content[1:].split(" ")
+        self.message = f"Q: {self.command.content[7:]} A: "
+        self.transponder = Transponder()
 
     async def coinflip(self):
         if random.random() >= 0.5:
-            await message.channel.send("Heads!")
+            await self.command.channel.send("Heads!")
         else:
-            await message.channel.send("Tails!")
-
+            await self.command.channel.send("Tails!")
 
     async def roll(self):
-        await message.channel.send(random.randint(0, int(command[1])))
-
+        await self.command.channel.send(
+            random.randint(0, int(self.message[1]))
+        )
 
     async def prompt(self):
-        await message.channel.send(
-            transponder.Transponder().prompt(message.content[1:].split(" "))
+        self.transponder.prompt(self.message)
+        await self.command.channel.send(
+            self.transponder.response
         )

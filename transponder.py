@@ -1,55 +1,27 @@
-import transformers
-import torch
+from llama_cpp import Llama
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+MODEL_PATH = os.getenv("MODEL_PATH")
+
 
 class Transponder:
 
-
     def __init__(self):
-        model_id = "meta-llama/Meta-Llama-3-8B-Instruct"
+        self.response = None
+        n_gpu_layers = 10
+        seed = 1337
+        n_ctx = 2048
 
-        global pipeline
-        pipeline = transformers.pipeline(
-            "text-generation",
-            model=model_id,
-            model_kwargs={"torch_dtype": torch.bfloat16},
-            device_map="auto",
+        self.llm = Llama(
+            MODEL_PATH,
+            n_gpu_layers=n_gpu_layers,
+            seed=seed,
+            n_ctx=n_ctx
         )
-
-        global terminators
-        terminators = [
-            pipeline.tokenizer.eos_token_id,
-            pipeline.tokenizer.convert_tokens_to_ids("<|eot_id|>")
-        ]
-
-        global context
-        context = ["You are a pirate chatbot who always responds in pirate speak!"]
-
-    def update_context(self, message):
-        context.append(message)
-
-    def get_context(self):
-        return context
-
 
     def prompt(self, message):
-
-        messages = [
-            {"role": "system", "content": self.get_context()},
-            {"role": "user", "content": message},
-        ]
-
-        outputs = pipeline(
-            messages,
-            max_new_tokens=256,
-            eos_token_id=terminators,
-            do_sample=True,
-            temperature=0.6,
-            top_p=0.9,
-        )
-
-        output = outputs[0]["generated_text"][-1]
-        dialog = output.get("content")
-
-        print(output)
-
-        return dialog
+        output = self.llm(prompt=message, max_tokens=32, stop=["Q: ", "\n"], echo=True)
+        prompt_and_response = output.get("choices")[0].get("text")
+        self.response = prompt_and_response.replace(message, "")
