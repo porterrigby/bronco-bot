@@ -9,6 +9,7 @@ load_dotenv()
 DISCORD_TOKEN = os.getenv("DISCORD_TOKEN")
 
 
+# Helper method to check if message is a command
 def check_command(message):
     if message.content.startswith('>'):
         return True
@@ -21,7 +22,6 @@ class MyClient(discord.Client):
         super().__init__(*args, **kwargs)
         self.commands = None
 
-    # Helper method to check if message is a command
 
     async def handle_command(self, signal):
         self.commands = Commands(signal=signal)
@@ -47,7 +47,6 @@ class MyClient(discord.Client):
 
         print(f"{BOT_NAME} connected to {server_count} servers")
 
-    # Random chance for every message that BroncoBot chooses to respond
     async def on_message(self, message):
         # Prevents BroncoBot from spontaneous response to self or on commands
         if message.author.id == self.user.id:
