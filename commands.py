@@ -1,7 +1,6 @@
 """
 Defines logic for commands parsed from discord channel messages.
 """
-
 import random
 
 

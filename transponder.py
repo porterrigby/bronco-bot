@@ -2,7 +2,6 @@
 Functions as a connector/wrapper for the Llama3 LLM, utilizing llama.cpp.
 Requires that the path to the LLM .gguf file is saved in a local .env file
 """
-
 import os
 from dotenv import load_dotenv
 from llama_cpp import Llama

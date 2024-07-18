@@ -1,4 +1,3 @@
-import random
 import discord
 import os
 from dotenv import load_dotenv
@@ -10,8 +9,10 @@ DISCORD_TOKEN = os.getenv("DISCORD_TOKEN")
 BOT_NAME = "BroncoBot"
 
 
-# Helper method to check if message is a command
 def check_command(message):
+    """
+    Helper method to check if message is a command.
+    """
     if message.content.startswith('>'):
         return True
     return False
