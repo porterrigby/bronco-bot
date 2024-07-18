@@ -3,16 +3,15 @@ Defines logic for commands parsed from discord channel messages.
 """
 
 import random
-from transponder import Transponder
 
 
 class Commands:
 
-    def __init__(self, signal):
+    def __init__(self, transponder, signal):
         self.signal = signal
         self.split_content = self.signal.content[1:].split(" ")
         self.message = f"Q: {self.signal.content[7:]} A: "
-        self.transponder = Transponder()
+        self.transponder = transponder
 
     async def coinflip(self):
         """
